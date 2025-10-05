@@ -1,0 +1,31 @@
+#include <PulseSensorPlayground.h> // Library for Pulse Sensor
+
+const int PulseWire = A0;       // Pulse Sensor connected to A0
+const int LEDpin = 13;          // On-board LED for pulse indication
+int Threshold = 550;            // Adjust threshold if needed
+
+PulseSensorPlayground pulseSensor;
+
+void setup() {
+  Serial.begin(9600);
+  pulseSensor.analogInput(PulseWire);
+  pulseSensor.blinkOnPulse(LEDpin);
+  pulseSensor.setThreshold(Threshold);
+
+  if (pulseSensor.begin()) {
+    Serial.println("Pulse sensor ready.");
+  } else {
+    Serial.println("Pulse sensor not detected. Check wiring.");
+  }
+}
+
+void loop() {
+  int myBPM = pulseSensor.getBeatsPerMinute();
+
+  if (pulseSensor.sawStartOfBeat()) {
+    Serial.print("BPM: ");
+    Serial.println(myBPM);
+  }
+
+  delay(20); // Small delay
+}
